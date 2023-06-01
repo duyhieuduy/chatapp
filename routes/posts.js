@@ -153,21 +153,6 @@ router.get('/r/comment/:postid', async (req, res) => {
 })
 
 
-// /post/user/profile
-router.post('/user/profile', uploadFile.single('image'), async (req, res, next) => {
-    try {
-        let { body, file } = req;
-        if (file) {
-            let avatar = `http://192.168.1.2:3000/images/${file.filename}`;
-            body = { ...body, avatar: avatar }
-        }
-        const { username, email, name, dob, gender, avatar } = req.body;
-        await postController.updateuser(username, email, name, dob, gender, avatar);
-        res.status(200).json({ result: true });
-    } catch (error) {
-        res.status(400).json({ result: false });
-    }
-})
 
 
 

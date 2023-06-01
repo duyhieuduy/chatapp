@@ -80,7 +80,7 @@ const addNewpost = async (content, createAt, user, image, hastag) => {
 
 const updatepost = async (id, content, createAt, hastag) => {
     try {
-        const post = await postmodel.findById(id);
+        const post = await postmodel.findOne(id);
         if (post) {
             post.content = content ? content : post.content;
             post.createAt = createAt ? createAt : post.createAt;
@@ -98,7 +98,7 @@ const updatepost = async (id, content, createAt, hastag) => {
 //update moi anh
 const updateimagepost = async (id, image) => {
     try {
-        const post = await postmodel.findById(id);
+        const post = await postmodel.findOne(id);
         if (post) {
             post.image = image ? image : post.image;
             await post.save();
@@ -113,7 +113,7 @@ const updateimagepost = async (id, image) => {
 
 const getpostById = async (id) => {
     try {
-        return await postmodel.findById(id);
+        return await postmodel.findOne(id);
     } catch (error) {
         console.log(error);
         return null;
@@ -143,7 +143,7 @@ const getpostByname = async (name) => {
 
 const likecounta = async (id) => {
     try {
-        const post = await postmodel.findById(id);
+        const post = await postmodel.findOne(id);
         if (post)
             post.likecount = post.likecount + 1;
         await post.save();
@@ -154,28 +154,10 @@ const likecounta = async (id) => {
     }
 }
 
-const updateuser = async (id, username, password, email, avatar, name, dob, gender) => {
-    try {
-        const user = await Usermodel.findById(id)
-        if (user) {
-            user.username = username ? username : user.username;
-            user.password = password ? password : user.password;
-            user.email = email ? email : user.email;
-            user.avatar = avatar ? avatar : user.avatar;
-            user.name = name ? name : user.name;
-            user.dob = dob ? dob : user.dob;
-            user.gender = gender ? gender : user.gender;
-        }
-        await user.save();
-        return true;
-    } catch (error) {
-        console.log(error)
-    }
-}
 
 
 module.exports = {
     getAllposts, deletepostById, addNewpost, updatepost,
-    getpostById, updateimagepost, updateuser,
+    getpostById, updateimagepost,
     getpostByname, likecounta, comment, getcommentbyid
 };

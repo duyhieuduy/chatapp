@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const userController = require('../component/User/UserController')
-
+const uploadFile = require('../middle/UploadFile')
 
 
 // Đường dẫn trang đăng nhập /login
@@ -17,7 +17,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Lấy thông tin tài khoản người dùng từ cơ sở dữ liệu
-    const user = userController.login(username, password);
+    const user = await userController.login(username, password);
     if (!user) {
       return res.status(400).json({ message: 'Tài khoản không tồn tại' });
     }
@@ -45,7 +45,7 @@ router.post('/register', async (req, res) => {
 router.post('/changepass', async (req, res) => {
   try {
     const { id, password } = req.body;
-    const user = userController.updatepassword(id, password);
+    const user = await userController.updatepassword(id, password);
     if (user)
       return res.status(200).send({ message: "Đổi pass thành công" });
 
@@ -64,5 +64,24 @@ router.get('/rbyiid/:id', async (req, res) => {
     console.log(error);
   }
 })
+
+
+// /user/profile
+router.post('/profile', uploadFile.single('image'), async (req, res, next) => {
+  try {
+    let { id } = req.params;
+    let { body, file } = req;
+    if (file) {
+      let image = `http://192.168.1.2:3000/images/${file.filename}`;
+      body = { ...body, avatar: image }
+    }
+    const { username, password, email, name, dob, gender, avatar } = body;
+    await userController.updateuser(id, username, password, email, name, dob, gender, avatar);
+    res.status(200).json({ result: true });
+  } catch (error) {
+    res.status(400).json({ result: false });
+  }
+})
+
 
 module.exports = router;

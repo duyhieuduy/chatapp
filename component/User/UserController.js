@@ -49,9 +49,14 @@ const register = async (username, password, name) => {
 
 const updatepassword = async (id, password) => {
     try {
-        const u = userModel.findById(id);
+        const u = await userModel.findById(id);
         if (u)
             u.password = password ? password : u.password
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(password, salt);
+
+        u.password = hash
+
         u.save();
         return true
     } catch (error) {
@@ -72,5 +77,26 @@ const getuserbyid = async (id) => {
         console.log(error);
     }
 }
-module.exports = { login, register, updatepassword, getuserbyid };
+
+const updateuser = async (id, username, password, email, avatar, name, dob, gender) => {
+    try {
+        const user = await Usermodel.findOne(id)
+        if (user) {
+            user.username = username ? username : user.username;
+            user.password = password ? password : user.password;
+            user.email = email ? email : user.email;
+            user.avatar = avatar ? avatar : user.avatar;
+            user.name = name ? name : user.name;
+            user.dob = dob ? dob : user.dob;
+            user.gender = gender ? gender : user.gender;
+        }
+        await user.save();
+        console.log(user);
+        return true;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports = { login, register, updatepassword, getuserbyid, updateuser };
 
