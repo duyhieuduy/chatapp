@@ -58,8 +58,10 @@ router.post('/c', uploadFile.single('image'), async (req, res, next) => {
             let image = `http://192.168.1.2:3000/images/${file.filename}`;
             body = { ...body, image: image }
         }
-        const { content, createAt, user, image } = req.body;
-        await postController.addNewpost(content, createAt, user, image);
+        const { content, user, image, hastag } = body;
+        let createAt = Date.now();
+        let likecount = 0;
+        await postController.addNewpost(content, createAt, user, image, hastag, likecount);
         res.status(200).json({ result: true });
     } catch (error) {
         res.status(400).json({ result: false });
@@ -75,9 +77,9 @@ router.post('/u/:id', uploadFile.single('image'), async (req, res, next) => {
             let image = `http://192.168.241.52:3000/images/${file.filename}`;
             body = { ...body, image: image }
         }
-        let { content, createAt, user, image } = body;
+        let { content, createAt, user, image, hastag } = body;
         console.log('Edit param:', image);
-        await postController.updatepost(id, content, createAt, user, image);
+        await postController.updatepost(id, content, createAt, user, image, hastag);
         res.status(200).json({ result: true });
     } catch (e) {
         console.log(e);

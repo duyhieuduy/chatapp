@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
 const userController = require('../component/User/UserController')
 const uploadFile = require('../middle/UploadFile')
 
@@ -67,19 +66,21 @@ router.get('/rbyiid/:id', async (req, res) => {
 
 
 // /user/profile
-router.post('/profile', uploadFile.single('image'), async (req, res, next) => {
+router.post('/profile/:id', uploadFile.single('avatar'), async (req, res, next) => {
   try {
     let { id } = req.params;
     let { body, file } = req;
+    console.log(id, body);
     if (file) {
       let image = `http://192.168.1.2:3000/images/${file.filename}`;
       body = { ...body, avatar: image }
     }
-    const { username, password, email, name, dob, gender, avatar } = body;
-    await userController.updateuser(id, username, password, email, name, dob, gender, avatar);
+    let { username, email, avatar, name, dob, gender } = body;
+    await userController.updateuser(id, username, email, avatar, name, dob, gender);
     res.status(200).json({ result: true });
   } catch (error) {
-    res.status(400).json({ result: false });
+    console.log(error)
+    res.status(500).json({ result: false });
   }
 })
 

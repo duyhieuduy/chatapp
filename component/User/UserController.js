@@ -78,12 +78,11 @@ const getuserbyid = async (id) => {
     }
 }
 
-const updateuser = async (id, username, password, email, avatar, name, dob, gender) => {
+const updateuser = async (id, username, email, avatar, name, dob, gender) => {
     try {
-        const user = await Usermodel.findOne(id)
+        const user = await Usermodel.findById(id)
         if (user) {
             user.username = username ? username : user.username;
-            user.password = password ? password : user.password;
             user.email = email ? email : user.email;
             user.avatar = avatar ? avatar : user.avatar;
             user.name = name ? name : user.name;
