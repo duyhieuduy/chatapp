@@ -2,6 +2,7 @@ const postmodel = require('./postmodel');
 const User = require('../User/Usermodel');
 const likemodel = require('../like/likemodel');
 const commentmodel = require('../comment/commentmodel');
+const Usermodel = require('../User/Usermodel');
 //page: số trang hiện tại
 //limit: số sản phẩm trên 1 trang
 const getAllposts = async (page, limit) => {
@@ -61,11 +62,11 @@ const deletepostById = async (id) => {
     }
 }
 
-const addNewpost = async (content, createAt, user, image) => {
+const addNewpost = async (content, createAt, user, image, hastag) => {
     try {
 
         const newpost = {
-            content, createAt, user, image
+            content, createAt, user, image, hastag
         }
         const post = new postmodel(newpost);
         await post.save();
@@ -77,13 +78,14 @@ const addNewpost = async (content, createAt, user, image) => {
 
 }
 
-const updatepost = async (id, content, createAt) => {
+const updatepost = async (id, content, createAt, hastag) => {
     try {
         const post = await postmodel.findById(id);
         if (post) {
             post.content = content ? content : post.content;
             post.createAt = createAt ? createAt : post.createAt;
             post.image = image ? image : post.image;
+            post.hastag = hastag ? hastag : post.hastag;
             // console.log('image chosen: ', post.image);
             await post.save();
             return true;
@@ -152,9 +154,28 @@ const likecounta = async (id) => {
     }
 }
 
+const updateuser = async (id, username, password, email, avatar, name, dob, gender) => {
+    try {
+        const user = await Usermodel.findById(id)
+        if (user) {
+            user.username = username ? username : user.username;
+            user.password = password ? password : user.password;
+            user.email = email ? email : user.email;
+            user.avatar = avatar ? avatar : user.avatar;
+            user.name = name ? name : user.name;
+            user.dob = dob ? dob : user.dob;
+            user.gender = gender ? gender : user.gender;
+        }
+        await user.save();
+        return true;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 module.exports = {
-    getAllposts, deletepostById, addNewpost, updatepost, 
-    getpostById, updateimagepost,
+    getAllposts, deletepostById, addNewpost, updatepost,
+    getpostById, updateimagepost, updateuser,
     getpostByname, likecounta, comment, getcommentbyid
 };

@@ -21,7 +21,7 @@ router.post('/login', async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'Tài khoản không tồn tại' });
     }
-
+    return res.status(200).json({ user })
   } catch (err) {
     console.error(err.message);
     res.status(500).send({ message: 'Lỗi máy chủ' });
@@ -52,6 +52,16 @@ router.post('/changepass', async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).send({ message: "Đổi pass Thất bại" });
+  }
+})
+
+router.get('/rbyiid/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const rbyiid = await userController.getuserbyid(id);
+    return res.status(200).json(rbyiid)
+  } catch (error) {
+    console.log(error);
   }
 })
 

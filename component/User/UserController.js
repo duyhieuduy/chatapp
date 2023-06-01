@@ -1,3 +1,4 @@
+const Usermodel = require('./Usermodel');
 const userModel = require('./Usermodel');
 const bcrypt = require('bcryptjs');
 
@@ -58,5 +59,18 @@ const updatepassword = async (id, password) => {
         return false;
     }
 }
-module.exports = { login, register, updatepassword };
+
+const getuserbyid = async (id) => {
+    try {
+        const u = await Usermodel.findById(id)
+        if (u)
+            return u
+        else {
+            return false
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+module.exports = { login, register, updatepassword, getuserbyid };
 

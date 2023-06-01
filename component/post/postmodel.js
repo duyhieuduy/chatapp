@@ -8,7 +8,8 @@ const PostSchema = new Schema({
     createAt: { type: Date },
     user: { type: ObjectId, ref: 'user' }, //khoa ngoai
     image: { type: String },
-    likecount: { type: Number }
+    likecount: { type: Number },
+    hastag: { type: String }
 
 })
 
